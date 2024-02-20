@@ -47,6 +47,124 @@
       </tags>
   </entry>
   <entry>
+    <title>STM32中的预编译</title>
+    <url>/posts/48839.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h1><p><strong>1、不带参宏定义</strong></p>
+<p><code>#define</code>，宏定义命令，它也是C语言预处理命令的一种。</p>
+<p>所谓宏定义，就是用一个标识符来表示一个字符串，如果在后面的代码中出现了该标识符，那么就全部替换成指定的字符串。</p>
+<p>例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100</span></span><br></pre></td></tr></table></figure>
+
+<p>在编译过程中遇到 N 时，会直接替换为 100。</p>
+<p><strong>2、带参公定义</strong></p>
+<p>宏定义可以携带参数。</p>
+<p>例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> M(y) y*y+3*y  <span class="comment">//宏定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 以下命令解释为 5*5+3*5</span></span><br><span class="line">    <span class="type">int</span> a = M(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3、防止头文件重复包含</strong></p>
+<p>如下所示</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __HEADER_One_H__ <span class="comment">// 意思是：宏开始行，如果还没有定义 __HEADER_One_H__ 则 进入，否则退出</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __HEADER_One_H__ <span class="comment">// 定义 __HEADER_One_H__</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// header1.h 头文件内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
+
+<p>模版：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __x_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __x_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
+
+<h1 id="if-与-if-defined"><a href="#if-与-if-defined" class="headerlink" title="#if 与 #if defined"></a>#if 与 #if defined</h1><p><strong>1、<code>#if</code></strong></p>
+<p><code>#if</code>的意思是如果宏条件符合，编译器就编译这段代码，否则，编译器就忽略这段代码而不编译，如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  A 0  <span class="comment">// 把A定义为0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (A &gt; 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &gt; 1&quot;</span>);  <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> (A == 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A == 1&quot;</span>); <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &lt; 1&quot;</span>);   <span class="comment">// 编译器编译了这段代码，且生成了汇编代码，执行该语句</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>模版：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2、<code>#if defined</code></strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> defined (x)</span></span><br><span class="line">    ...code...</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个<code>#if defined</code>它不管里面的 x 的逻辑是“真”还是“假”。它只管这个程序的前面的宏定义里面有没有定义 x 这个宏，如果定义了 x 这个宏，那么，编译器会编译中间的 <code>…code…</code>，否则会直接忽视中间的 <code>…code…</code> 代码。</p>
+]]></content>
+      <categories>
+        <category>大学生电子设计竞赛</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>STM32入门</title>
+    <url>/posts/7474.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="必备知识"><a href="#必备知识" class="headerlink" title="必备知识"></a>必备知识</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>什么是 STM32：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id1">什么是STM32</a></p>
+<p>STM32 能做什么：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id3">STM32能做什么</a></p>
+<p>ST 官方官方网址：<a href="https://www.st.com/content/st_com/zh.html">ST官网 (st.com)</a></p>
+<p>ST 官方中文网站：<a href="https://www.stmcu.com.cn/">STMCU中文官网</a></p>
+<h2 id="型号"><a href="#型号" class="headerlink" title="型号"></a>型号</h2><p>STM32 怎么选型：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id7">STM32怎么选型</a></p>
+<p>STM32 F1与F4的区别：<a href="https://shequ.stmicroelectronics.cn/thread-632128-1-1.html">【经验分享】ST公司STM32F4与STM32F1的区别</a></p>
+<h1 id="学习资源"><a href="#学习资源" class="headerlink" title="学习资源"></a>学习资源</h1><p><strong>1、STM32 学习</strong></p>
+<p>STM32 标准库开发：<a href="https://www.bilibili.com/video/BV1th411z7sn/">STM32入门教程-2023持续更新中</a></p>
+<p>STM32 HAL库开发：<a href="https://www.bilibili.com/video/BV18X4y1M763?p=2&vd_source=c6a75c082f96f79b814a4b6c18035936">【野火】STM32 HAL库开发实战指南 教学视频 手把手教学STM32全系列</a></p>
+<p><strong>2、Kicad</strong></p>
+<p>KiCad 是一款 PCB 设计软件，优点是开源、有许多插件可用、有许多快捷键方便操作</p>
+<p>学习路径：<a href="https://docs.kicad.org/6.0/zh/kicad/kicad.html#%E7%AE%80%E4%BB%8B">KiCad | 6.0 | 简体中文 | Documentation | KiCad</a></p>
+<blockquote>
+<p>PCB（Printed Circuit Board），中文名称为印制电路板，又称印刷线路板，是重要的电子部件，是电子元器件的支撑体，是电子元器件电气相互连接的载体。由于它是采用电子印刷术制作的，故被称为“印刷”电路板。</p>
+<p>PCB 可以粗浅的理解为焊接死的面包板，目的是为了防止连线在搬运的过程中松动导致问题</p>
+</blockquote>
+<p><strong>3、部分项目学习</strong></p>
+<p>可以通过学习他人的部分项目，深入对开发过程的理解</p>
+<p>智能小车入门：<a href="https://www.bilibili.com/video/BV1SY411L7rJ">STM32智能小车教程-循迹-避障-蓝牙遥控-跟随-stm32f103c8t6-stm32最小系统-手把手入门教程</a></p>
+<p>智能送药小车标准库：<a href="https://www.bilibili.com/video/BV1zg411e7Ri?p=1&vd_source=c6a75c082f96f79b814a4b6c18035936">电赛培训-基于21年赛题-智能送药小车</a></p>
+<p>智能送药小车HAL库：<a href="https://www.bilibili.com/video/BV1UL411V7XK/">电赛“智能送药小车”【干货教程】STM32HAL库CubeMX+pid串级控制+OpenMV数字识别</a></p>
+<p>智能送药小车：<a href="https://aitechtogether.com/article/2724.html">2021年电赛F题智能送药小车（国二）开源分享</a></p>
+<p>其他智能送药小车：<a href="https://www.eetree.cn/project/detail/687">2021全国电赛真题（F）—— 智能送药小车</a></p>
+<p>小车跟随行驶系统：<a href="https://blog.csdn.net/qq_52608074/article/details/126453231">2022电赛省一-小车跟随行驶系统（C题）</a></p>
+<p>电磁炮：<a href="https://blog.csdn.net/weixin_38815998/article/details/99689190">2019电赛—-模拟电磁曲射炮</a></p>
+<p>滚球：<a href="https://blog.csdn.net/weixin_38815998/article/details/99684652">电赛入坑—-2017年电赛国赛真题滚球控制系统</a></p>
+<p><strong>4、电机</strong></p>
+<p>电机快速初步了解：<a href="https://www.bilibili.com/video/BV1ig411S7gX/">有刷电机与无刷电机的原理</a></p>
+<p>电机学习：<a href="https://www.bilibili.com/video/BV1kQ4y1y7Bf/">一个视频学完生活中的所有电机</a></p>
+<p>电机驱动：<a href="https://www.bilibili.com/video/BV1BL4y187YF/">一个视频了解生活中电机的驱动控制及调速方法</a></p>
+<p>以上均为快速了解，作为科普简单留下感性印象，下面的视频能更完善的学习电机</p>
+<p>视频地址：<a href="https://www.bilibili.com/video/BV1AZ4y1V7wt?p=8&vd_source=c6a75c082f96f79b814a4b6c18035936">【野火】电机系列教学视频，基于STM32硬件（步进电机，直流有刷电机，直流无刷电机，舵机，永磁同步电机PMSM）PID闭环算法</a></p>
+<p>在线文档：<a href="https://doc.embedfire.com/motor/motor_tutorial/zh/latest/README.html">【野火】电机应用开发实战指南—基于STM32</a></p>
+<p><strong>5、PID算法</strong></p>
+<p>电机中的 <a href="https://www.bilibili.com/video/BV1AZ4y1V7wt?p=8&vd_source=c6a75c082f96f79b814a4b6c18035936">野火视频</a> 有讲解，此外还有一些资源</p>
+<p>PID理论学习：<a href="https://www.bilibili.com/video/BV1B54y1V7hp">从不懂到会用！PID从理论到实践~</a></p>
+<p><strong>6、相关模块学习</strong></p>
+<p>灰度传感器：<a href="https://blog.csdn.net/qq_41748900/article/details/102641330">一种双灰度传感器巡黑线方案</a></p>
+<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><h2 id="总体"><a href="#总体" class="headerlink" title="总体"></a>总体</h2><p>STM32F10xxx参考手册（中文）<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/STM32F10xxx%E5%8F%82%E8%80%83%E6%89%8B%E5%86%8C%EF%BC%88%E4%B8%AD%E6%96%87%EF%BC%89.pdf">STM32F103C8T6&#x2F;STM32F10xxx参考手册（中文）</a></p>
+<p>数据手册：<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/STM32F103x8B%E6%95%B0%E6%8D%AE%E6%89%8B%E5%86%8C%EF%BC%88%E4%B8%AD%E6%96%87%EF%BC%89.pdf">STM32F103C8T6&#x2F;STM32F103x8B数据手册（中文）</a></p>
+<p>Cortex-M3权威指南：<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/Cortex-M3%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97.pdf">STM32F103C8T6&#x2F;Cortex-M3权威指南</a></p>
+<p>野火F103 标准库开发指南：<a href="https://doc.embedfire.com/mcu/stm32/f103mini/std/zh/latest/index.html">野火STM32库开发实战指南——基于野火MINI开发板</a></p>
+<p>野火F103 HAL库开发指南：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/index.html">野火F103 HAL库开发指南</a></p>
+<h2 id="HC-05模块"><a href="#HC-05模块" class="headerlink" title="HC-05模块"></a>HC-05模块</h2><p>概述：<a href="https://blog.csdn.net/qq_38410730/article/details/80368485">【常用模块】HC-05蓝牙串口通信模块使用详解（实例：手机蓝牙控制STM32单片机）</a></p>
+<p>双机通信：<a href="http://ultirobot.com/2017/09/22/hc05communcation/">两个HC-05蓝牙互相连接方法</a></p>
+<p>所有AT指令：<a href="https://www.taiwaniot.com.tw/wp-content/uploads/2016/01/ADIO-HC-05-1.pdf">HC-05 嵌入式蓝牙串口通讯模块 AT 指令集</a></p>
+<div class="note info modern"><p>如果接受乱码，注意看波特率是否正确，默认值为9600！</p>
+</div>
+
+<p>STM32 接受蓝牙信息代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stm32f10x.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">My_USART1_Init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    GPIO_InitTypeDef GPIO_InitStrue;</span><br><span class="line">    USART_InitTypeDef USART_InitStrue;</span><br><span class="line">    NVIC_InitTypeDef NVIC_InitStrue;</span><br><span class="line"></span><br><span class="line">    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);  <span class="comment">//GPIO端口使能  </span></span><br><span class="line">    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);  <span class="comment">//串口端口使能  </span></span><br><span class="line"></span><br><span class="line">    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_AF_PP;  <span class="comment">// 模式: 复用输出</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_9;  <span class="comment">// 引脚: A9</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;  <span class="comment">// 速度: 10MHz</span></span><br><span class="line">    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);</span><br><span class="line"></span><br><span class="line">    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_IN_FLOATING;  <span class="comment">// 模式: 浮空输入</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_10;  <span class="comment">// 引脚: A10</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;  <span class="comment">// 速度: 10MHz</span></span><br><span class="line">    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);</span><br><span class="line"></span><br><span class="line">    USART_InitStrue.USART_BaudRate=<span class="number">9600</span>;  <span class="comment">// 波特率: 9600</span></span><br><span class="line">    USART_InitStrue.USART_HardwareFlowControl=USART_HardwareFlowControl_None;  <span class="comment">// 硬件流控制: 无</span></span><br><span class="line">    USART_InitStrue.USART_Mode=USART_Mode_Tx|USART_Mode_Rx;  <span class="comment">// 串口模式: 接受与发送</span></span><br><span class="line">    USART_InitStrue.USART_Parity=USART_Parity_No;  <span class="comment">// 极性: 无</span></span><br><span class="line">    USART_InitStrue.USART_StopBits=USART_StopBits_1;  <span class="comment">// 停止位: 1位</span></span><br><span class="line">    USART_InitStrue.USART_WordLength=USART_WordLength_8b;  <span class="comment">// 数据位长度: 8位</span></span><br><span class="line"></span><br><span class="line">    USART_Init(USART1,&amp;USART_InitStrue);</span><br><span class="line"></span><br><span class="line">    USART_Cmd(USART1,ENABLE);  <span class="comment">//使能串口1</span></span><br><span class="line"></span><br><span class="line">    USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);  <span class="comment">//开启接收中断</span></span><br><span class="line"></span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannel=USART1_IRQn;</span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelCmd=ENABLE;</span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelPreemptionPriority=<span class="number">1</span>;  <span class="comment">// 优先中断级别: 1</span></span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelSubPriority=<span class="number">1</span>;  <span class="comment">// 普通中断级别: 1</span></span><br><span class="line">    NVIC_Init(&amp;NVIC_InitStrue);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">USART1_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    u8 res;</span><br><span class="line">    <span class="keyword">if</span>(USART_GetITStatus(USART1,USART_IT_RXNE)!=RESET)</span><br><span class="line">    &#123;</span><br><span class="line">        res= USART_ReceiveData(USART1);</span><br><span class="line">        USART_SendData(USART1,res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);</span><br><span class="line">    My_USART1_Init();</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="电机控制"><a href="#电机控制" class="headerlink" title="电机控制"></a>电机控制</h2><p>电机驱动与编码器：<a href="https://blog.csdn.net/qq_46554815/article/details/113557435">TB6612与电机编码器</a></p>
+<h2 id="超声波跟随"><a href="#超声波跟随" class="headerlink" title="超声波跟随"></a>超声波跟随</h2><p>HC-SR04模块：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u/?p=30">超声波原理及测距</a></p>
+<p>超声波跟随小车：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=36">超声波跟随小车</a></p>
+<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>串口调试：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=27">USART-FlyMcu下载程序</a></p>
+<div class="note info modern"><p>配合蓝牙模块可实现无线烧录功能</p>
+</div>
+
+<h2 id="红外遥控"><a href="#红外遥控" class="headerlink" title="红外遥控"></a>红外遥控</h2><p>介绍：<a href="https://blog.csdn.net/qq_40318498/article/details/97166387">STM32 红外遥控器详解</a></p>
+]]></content>
+      <categories>
+        <category>大学生电子设计竞赛</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STM32标准库学习</title>
     <url>/posts/20930.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="stm32-固件库函数介绍"><a href="#stm32-固件库函数介绍" class="headerlink" title="stm32 固件库函数介绍"></a>stm32 固件库函数介绍</h1><p><strong>1、RCC</strong></p>
@@ -249,124 +367,6 @@
 <li>收发 HEX 数据包</li>
 </ol>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * @brief  发送数据包</span></span><br><span class="line"><span class="comment">  * @param  None</span></span><br><span class="line"><span class="comment">  * @retval None</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">Serial_SendPacket</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	Serial_SendByte(<span class="number">0xFF</span>);</span><br><span class="line">	Serial_SendArray(Serial_TxPacket, <span class="number">4</span>);</span><br><span class="line">	Serial_SendByte(<span class="number">0xFE</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * @brief  中断程序中接收数据包</span></span><br><span class="line"><span class="comment">  * @param  None</span></span><br><span class="line"><span class="comment">  * @retval None</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">USART1_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">uint8_t</span> RxState = <span class="number">0</span>;		<span class="comment">// 当前状态</span></span><br><span class="line">	<span class="type">static</span> <span class="type">uint8_t</span> pRxPacket = <span class="number">0</span>;		<span class="comment">// 接收到第几个数据</span></span><br><span class="line">	<span class="keyword">if</span> (USART_GetITStatus(USART1, USART_IT_RXNE) == SET)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">uint8_t</span> RxData = USART_ReceiveData(USART1);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span> (RxState == <span class="number">0</span>)		<span class="comment">// 状态0：包头</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (RxData == <span class="number">0xFF</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				RxState = <span class="number">1</span>;	<span class="comment">// 进入状态1</span></span><br><span class="line">				pRxPacket = <span class="number">0</span>;	<span class="comment">// 接收数据指针置零</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (RxState == <span class="number">1</span>)				<span class="comment">// 状态1：数据</span></span><br><span class="line">		&#123;</span><br><span class="line">			Serial_RxPacket[pRxPacket] = RxData;	<span class="comment">// 接收数据</span></span><br><span class="line">			pRxPacket ++;				<span class="comment">// 指针后移</span></span><br><span class="line">			<span class="keyword">if</span> (pRxPacket &gt;= <span class="number">4</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				RxState = <span class="number">2</span>;		<span class="comment">// 进入状态3</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (RxState == <span class="number">2</span>)			<span class="comment">// 状态2：包尾</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (RxData == <span class="number">0xFE</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				RxState = <span class="number">0</span>;		<span class="comment">// 重新进入状态0</span></span><br><span class="line">				Serial_RxFlag = <span class="number">1</span>;	<span class="comment">// 置接收标志位为1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		USART_ClearITPendingBit(USART1, USART_IT_RXNE);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>大学生电子设计竞赛</category>
-      </categories>
-      <tags>
-        <tag>单片机</tag>
-        <tag>嵌入式</tag>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STM32中的预编译</title>
-    <url>/posts/48839.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h1><p><strong>1、不带参宏定义</strong></p>
-<p><code>#define</code>，宏定义命令，它也是C语言预处理命令的一种。</p>
-<p>所谓宏定义，就是用一个标识符来表示一个字符串，如果在后面的代码中出现了该标识符，那么就全部替换成指定的字符串。</p>
-<p>例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100</span></span><br></pre></td></tr></table></figure>
-
-<p>在编译过程中遇到 N 时，会直接替换为 100。</p>
-<p><strong>2、带参公定义</strong></p>
-<p>宏定义可以携带参数。</p>
-<p>例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> M(y) y*y+3*y  <span class="comment">//宏定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 以下命令解释为 5*5+3*5</span></span><br><span class="line">    <span class="type">int</span> a = M(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>3、防止头文件重复包含</strong></p>
-<p>如下所示</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __HEADER_One_H__ <span class="comment">// 意思是：宏开始行，如果还没有定义 __HEADER_One_H__ 则 进入，否则退出</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __HEADER_One_H__ <span class="comment">// 定义 __HEADER_One_H__</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// header1.h 头文件内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
-
-<p>模版：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __x_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __x_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
-
-<h1 id="if-与-if-defined"><a href="#if-与-if-defined" class="headerlink" title="#if 与 #if defined"></a>#if 与 #if defined</h1><p><strong>1、<code>#if</code></strong></p>
-<p><code>#if</code>的意思是如果宏条件符合，编译器就编译这段代码，否则，编译器就忽略这段代码而不编译，如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  A 0  <span class="comment">// 把A定义为0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (A &gt; 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &gt; 1&quot;</span>);  <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> (A == 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A == 1&quot;</span>); <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &lt; 1&quot;</span>);   <span class="comment">// 编译器编译了这段代码，且生成了汇编代码，执行该语句</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>模版：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p><strong>2、<code>#if defined</code></strong></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> defined (x)</span></span><br><span class="line">    ...code...</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>这个<code>#if defined</code>它不管里面的 x 的逻辑是“真”还是“假”。它只管这个程序的前面的宏定义里面有没有定义 x 这个宏，如果定义了 x 这个宏，那么，编译器会编译中间的 <code>…code…</code>，否则会直接忽视中间的 <code>…code…</code> 代码。</p>
-]]></content>
-      <categories>
-        <category>大学生电子设计竞赛</category>
-      </categories>
-      <tags>
-        <tag>单片机</tag>
-        <tag>嵌入式</tag>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STM32入门</title>
-    <url>/posts/7474.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="必备知识"><a href="#必备知识" class="headerlink" title="必备知识"></a>必备知识</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>什么是 STM32：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id1">什么是STM32</a></p>
-<p>STM32 能做什么：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id3">STM32能做什么</a></p>
-<p>ST 官方官方网址：<a href="https://www.st.com/content/st_com/zh.html">ST官网 (st.com)</a></p>
-<p>ST 官方中文网站：<a href="https://www.stmcu.com.cn/">STMCU中文官网</a></p>
-<h2 id="型号"><a href="#型号" class="headerlink" title="型号"></a>型号</h2><p>STM32 怎么选型：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/doc/chapter4/chapter4.html#id7">STM32怎么选型</a></p>
-<p>STM32 F1与F4的区别：<a href="https://shequ.stmicroelectronics.cn/thread-632128-1-1.html">【经验分享】ST公司STM32F4与STM32F1的区别</a></p>
-<h1 id="学习资源"><a href="#学习资源" class="headerlink" title="学习资源"></a>学习资源</h1><p><strong>1、STM32 学习</strong></p>
-<p>STM32 标准库开发：<a href="https://www.bilibili.com/video/BV1th411z7sn/">STM32入门教程-2023持续更新中</a></p>
-<p>STM32 HAL库开发：<a href="https://www.bilibili.com/video/BV18X4y1M763?p=2&vd_source=c6a75c082f96f79b814a4b6c18035936">【野火】STM32 HAL库开发实战指南 教学视频 手把手教学STM32全系列</a></p>
-<p><strong>2、Kicad</strong></p>
-<p>KiCad 是一款 PCB 设计软件，优点是开源、有许多插件可用、有许多快捷键方便操作</p>
-<p>学习路径：<a href="https://docs.kicad.org/6.0/zh/kicad/kicad.html#%E7%AE%80%E4%BB%8B">KiCad | 6.0 | 简体中文 | Documentation | KiCad</a></p>
-<blockquote>
-<p>PCB（Printed Circuit Board），中文名称为印制电路板，又称印刷线路板，是重要的电子部件，是电子元器件的支撑体，是电子元器件电气相互连接的载体。由于它是采用电子印刷术制作的，故被称为“印刷”电路板。</p>
-<p>PCB 可以粗浅的理解为焊接死的面包板，目的是为了防止连线在搬运的过程中松动导致问题</p>
-</blockquote>
-<p><strong>3、部分项目学习</strong></p>
-<p>可以通过学习他人的部分项目，深入对开发过程的理解</p>
-<p>智能小车入门：<a href="https://www.bilibili.com/video/BV1SY411L7rJ">STM32智能小车教程-循迹-避障-蓝牙遥控-跟随-stm32f103c8t6-stm32最小系统-手把手入门教程</a></p>
-<p>智能送药小车标准库：<a href="https://www.bilibili.com/video/BV1zg411e7Ri?p=1&vd_source=c6a75c082f96f79b814a4b6c18035936">电赛培训-基于21年赛题-智能送药小车</a></p>
-<p>智能送药小车HAL库：<a href="https://www.bilibili.com/video/BV1UL411V7XK/">电赛“智能送药小车”【干货教程】STM32HAL库CubeMX+pid串级控制+OpenMV数字识别</a></p>
-<p>智能送药小车：<a href="https://aitechtogether.com/article/2724.html">2021年电赛F题智能送药小车（国二）开源分享</a></p>
-<p>其他智能送药小车：<a href="https://www.eetree.cn/project/detail/687">2021全国电赛真题（F）—— 智能送药小车</a></p>
-<p>小车跟随行驶系统：<a href="https://blog.csdn.net/qq_52608074/article/details/126453231">2022电赛省一-小车跟随行驶系统（C题）</a></p>
-<p>电磁炮：<a href="https://blog.csdn.net/weixin_38815998/article/details/99689190">2019电赛—-模拟电磁曲射炮</a></p>
-<p>滚球：<a href="https://blog.csdn.net/weixin_38815998/article/details/99684652">电赛入坑—-2017年电赛国赛真题滚球控制系统</a></p>
-<p><strong>4、电机</strong></p>
-<p>电机快速初步了解：<a href="https://www.bilibili.com/video/BV1ig411S7gX/">有刷电机与无刷电机的原理</a></p>
-<p>电机学习：<a href="https://www.bilibili.com/video/BV1kQ4y1y7Bf/">一个视频学完生活中的所有电机</a></p>
-<p>电机驱动：<a href="https://www.bilibili.com/video/BV1BL4y187YF/">一个视频了解生活中电机的驱动控制及调速方法</a></p>
-<p>以上均为快速了解，作为科普简单留下感性印象，下面的视频能更完善的学习电机</p>
-<p>视频地址：<a href="https://www.bilibili.com/video/BV1AZ4y1V7wt?p=8&vd_source=c6a75c082f96f79b814a4b6c18035936">【野火】电机系列教学视频，基于STM32硬件（步进电机，直流有刷电机，直流无刷电机，舵机，永磁同步电机PMSM）PID闭环算法</a></p>
-<p>在线文档：<a href="https://doc.embedfire.com/motor/motor_tutorial/zh/latest/README.html">【野火】电机应用开发实战指南—基于STM32</a></p>
-<p><strong>5、PID算法</strong></p>
-<p>电机中的 <a href="https://www.bilibili.com/video/BV1AZ4y1V7wt?p=8&vd_source=c6a75c082f96f79b814a4b6c18035936">野火视频</a> 有讲解，此外还有一些资源</p>
-<p>PID理论学习：<a href="https://www.bilibili.com/video/BV1B54y1V7hp">从不懂到会用！PID从理论到实践~</a></p>
-<p><strong>6、相关模块学习</strong></p>
-<p>灰度传感器：<a href="https://blog.csdn.net/qq_41748900/article/details/102641330">一种双灰度传感器巡黑线方案</a></p>
-<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><h2 id="总体"><a href="#总体" class="headerlink" title="总体"></a>总体</h2><p>STM32F10xxx参考手册（中文）<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/STM32F10xxx%E5%8F%82%E8%80%83%E6%89%8B%E5%86%8C%EF%BC%88%E4%B8%AD%E6%96%87%EF%BC%89.pdf">STM32F103C8T6&#x2F;STM32F10xxx参考手册（中文）</a></p>
-<p>数据手册：<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/STM32F103x8B%E6%95%B0%E6%8D%AE%E6%89%8B%E5%86%8C%EF%BC%88%E4%B8%AD%E6%96%87%EF%BC%89.pdf">STM32F103C8T6&#x2F;STM32F103x8B数据手册（中文）</a></p>
-<p>Cortex-M3权威指南：<a href="https://github.com/gzpeng233/STM32F103C8T6/blob/master/Cortex-M3%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97.pdf">STM32F103C8T6&#x2F;Cortex-M3权威指南</a></p>
-<p>野火F103 标准库开发指南：<a href="https://doc.embedfire.com/mcu/stm32/f103mini/std/zh/latest/index.html">野火STM32库开发实战指南——基于野火MINI开发板</a></p>
-<p>野火F103 HAL库开发指南：<a href="https://doc.embedfire.com/mcu/stm32/f103/hal_general/zh/latest/index.html">野火F103 HAL库开发指南</a></p>
-<h2 id="HC-05模块"><a href="#HC-05模块" class="headerlink" title="HC-05模块"></a>HC-05模块</h2><p>概述：<a href="https://blog.csdn.net/qq_38410730/article/details/80368485">【常用模块】HC-05蓝牙串口通信模块使用详解（实例：手机蓝牙控制STM32单片机）</a></p>
-<p>双机通信：<a href="http://ultirobot.com/2017/09/22/hc05communcation/">两个HC-05蓝牙互相连接方法</a></p>
-<p>所有AT指令：<a href="https://www.taiwaniot.com.tw/wp-content/uploads/2016/01/ADIO-HC-05-1.pdf">HC-05 嵌入式蓝牙串口通讯模块 AT 指令集</a></p>
-<div class="note info modern"><p>如果接受乱码，注意看波特率是否正确，默认值为9600！</p>
-</div>
-
-<p>STM32 接受蓝牙信息代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stm32f10x.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">My_USART1_Init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    GPIO_InitTypeDef GPIO_InitStrue;</span><br><span class="line">    USART_InitTypeDef USART_InitStrue;</span><br><span class="line">    NVIC_InitTypeDef NVIC_InitStrue;</span><br><span class="line"></span><br><span class="line">    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);  <span class="comment">//GPIO端口使能  </span></span><br><span class="line">    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);  <span class="comment">//串口端口使能  </span></span><br><span class="line"></span><br><span class="line">    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_AF_PP;  <span class="comment">// 模式: 复用输出</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_9;  <span class="comment">// 引脚: A9</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;  <span class="comment">// 速度: 10MHz</span></span><br><span class="line">    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);</span><br><span class="line"></span><br><span class="line">    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_IN_FLOATING;  <span class="comment">// 模式: 浮空输入</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_10;  <span class="comment">// 引脚: A10</span></span><br><span class="line">    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;  <span class="comment">// 速度: 10MHz</span></span><br><span class="line">    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);</span><br><span class="line"></span><br><span class="line">    USART_InitStrue.USART_BaudRate=<span class="number">9600</span>;  <span class="comment">// 波特率: 9600</span></span><br><span class="line">    USART_InitStrue.USART_HardwareFlowControl=USART_HardwareFlowControl_None;  <span class="comment">// 硬件流控制: 无</span></span><br><span class="line">    USART_InitStrue.USART_Mode=USART_Mode_Tx|USART_Mode_Rx;  <span class="comment">// 串口模式: 接受与发送</span></span><br><span class="line">    USART_InitStrue.USART_Parity=USART_Parity_No;  <span class="comment">// 极性: 无</span></span><br><span class="line">    USART_InitStrue.USART_StopBits=USART_StopBits_1;  <span class="comment">// 停止位: 1位</span></span><br><span class="line">    USART_InitStrue.USART_WordLength=USART_WordLength_8b;  <span class="comment">// 数据位长度: 8位</span></span><br><span class="line"></span><br><span class="line">    USART_Init(USART1,&amp;USART_InitStrue);</span><br><span class="line"></span><br><span class="line">    USART_Cmd(USART1,ENABLE);  <span class="comment">//使能串口1</span></span><br><span class="line"></span><br><span class="line">    USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);  <span class="comment">//开启接收中断</span></span><br><span class="line"></span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannel=USART1_IRQn;</span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelCmd=ENABLE;</span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelPreemptionPriority=<span class="number">1</span>;  <span class="comment">// 优先中断级别: 1</span></span><br><span class="line">    NVIC_InitStrue.NVIC_IRQChannelSubPriority=<span class="number">1</span>;  <span class="comment">// 普通中断级别: 1</span></span><br><span class="line">    NVIC_Init(&amp;NVIC_InitStrue);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">USART1_IRQHandler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    u8 res;</span><br><span class="line">    <span class="keyword">if</span>(USART_GetITStatus(USART1,USART_IT_RXNE)!=RESET)</span><br><span class="line">    &#123;</span><br><span class="line">        res= USART_ReceiveData(USART1);</span><br><span class="line">        USART_SendData(USART1,res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);</span><br><span class="line">    My_USART1_Init();</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="电机控制"><a href="#电机控制" class="headerlink" title="电机控制"></a>电机控制</h2><p>电机驱动与编码器：<a href="https://blog.csdn.net/qq_46554815/article/details/113557435">TB6612与电机编码器</a></p>
-<h2 id="超声波跟随"><a href="#超声波跟随" class="headerlink" title="超声波跟随"></a>超声波跟随</h2><p>HC-SR04模块：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u/?p=30">超声波原理及测距</a></p>
-<p>超声波跟随小车：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=36">超声波跟随小车</a></p>
-<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>串口调试：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=27">USART-FlyMcu下载程序</a></p>
-<div class="note info modern"><p>配合蓝牙模块可实现无线烧录功能</p>
-</div>
-
-<h2 id="红外遥控"><a href="#红外遥控" class="headerlink" title="红外遥控"></a>红外遥控</h2><p>介绍：<a href="https://blog.csdn.net/qq_40318498/article/details/97166387">STM32 红外遥控器详解</a></p>
-]]></content>
       <categories>
         <category>大学生电子设计竞赛</category>
       </categories>
