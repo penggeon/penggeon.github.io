@@ -140,7 +140,7 @@
 <h2 id="HC-05模块"><a href="#HC-05模块" class="headerlink" title="HC-05模块"></a>HC-05模块</h2><p>概述：<a href="https://blog.csdn.net/qq_38410730/article/details/80368485">【常用模块】HC-05蓝牙串口通信模块使用详解（实例：手机蓝牙控制STM32单片机）</a></p>
 <p>双机通信：<a href="http://ultirobot.com/2017/09/22/hc05communcation/">两个HC-05蓝牙互相连接方法</a></p>
 <p>所有AT指令：<a href="https://www.taiwaniot.com.tw/wp-content/uploads/2016/01/ADIO-HC-05-1.pdf">HC-05 嵌入式蓝牙串口通讯模块 AT 指令集</a></p>
-<div class="note info modern"><p>如果接受乱码，注意看波特率是否正确，默认值为9600！</p>
+<div class="note info flat"><p>如果接受乱码，注意看波特率是否正确，默认值为9600！</p>
 </div>
 
 <p>STM32 接受蓝牙信息代码如下：</p>
@@ -150,7 +150,7 @@
 <h2 id="超声波跟随"><a href="#超声波跟随" class="headerlink" title="超声波跟随"></a>超声波跟随</h2><p>HC-SR04模块：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u/?p=30">超声波原理及测距</a></p>
 <p>超声波跟随小车：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=36">超声波跟随小车</a></p>
 <h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>串口调试：<a href="https://www.bilibili.com/video/BV1Dg4y1u71u?p=27">USART-FlyMcu下载程序</a></p>
-<div class="note info modern"><p>配合蓝牙模块可实现无线烧录功能</p>
+<div class="note info flat"><p>配合蓝牙模块可实现无线烧录功能</p>
 </div>
 
 <h2 id="红外遥控"><a href="#红外遥控" class="headerlink" title="红外遥控"></a>红外遥控</h2><p>介绍：<a href="https://blog.csdn.net/qq_40318498/article/details/97166387">STM32 红外遥控器详解</a></p>
@@ -411,11 +411,67 @@
       </tags>
   </entry>
   <entry>
+    <title>视觉模块</title>
+    <url>/posts/6413.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="openmv"><a href="#openmv" class="headerlink" title="openmv"></a>openmv</h1><h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><strong>1、网址</strong></p>
+<p>中文官网：<a href="https://singtown.com/openmv/">星瞳科技</a></p>
+<p>教程：<a href="https://book.openmv.cc/quick-starter.html">上手教程</a></p>
+<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/index.html">中文文档</a></p>
+<p>所有对象及方法：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/index.html#openmv-cam">特定于OpenMV Cam的库</a></p>
+<p><strong>2、查找手册</strong></p>
+<p>所有外设概述：<a href="https://book.openmv.cc/MCU/pyb.html">pyb各种外设</a></p>
+<p>串口：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.UART.html">UART类 – 双向串行通信总线</a></p>
+<p>电机：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.Servo.html">Servo类 –三线hobby舵机驱动</a></p>
+<h2 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h2><p>寻找色块：<a href="https://book.openmv.cc/quick-starter.html#%E8%BF%BD%E8%B8%AA%E5%B0%8F%E7%90%83">追踪小球</a> （官网写着追踪小球，但其实是寻找色块）</p>
+<p>模版匹配（单）：<a href="https://book.openmv.cc/image/template-match.html">模版匹配NCC</a></p>
+<p>模版匹配（多）：<a href="https://book.openmv.cc/image/mulity-template-match.html">多模版匹配NCC</a></p>
+<p>串口通信（只发送一个字节）：<a href="https://book.openmv.cc/MCU/serial1.html#%E4%BB%8B%E7%BB%8D">介绍</a></p>
+<p>巡线小车：<a href="https://book.openmv.cc/project/follow-lines.html#%E8%B0%83%E6%95%B4%E5%8F%82%E6%95%B0%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%B7%9F%E9%9A%8F">巡线小车</a></p>
+<h2 id="代码注解"><a href="#代码注解" class="headerlink" title="代码注解"></a>代码注解</h2><p><strong>1、JSON</strong></p>
+<p>以下的代码即可完成JSON的转换。</p>
+<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html">https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">json.dumps(your_data)</span><br></pre></td></tr></table></figure>
+
+<p>有时可以使用python的字符串格式化的功能代替JSON，例如下面的代码是一样的。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">output_str=<span class="string">&quot;[%d,%d]&quot;</span> % (max_blob.cx(),max_blob.cy()) <span class="comment">#方式1</span></span><br><span class="line">output_str=json.dumps([max_blob.cx(),max_blob.cy()]) <span class="comment">#方式2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2、其他</strong></p>
+<p>自己学的时候写了个定时器定时中断控制灯的代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pyb</span><br><span class="line"><span class="keyword">from</span> pyb <span class="keyword">import</span> LED, Timer</span><br><span class="line"></span><br><span class="line">rled = LED(<span class="number">1</span>) <span class="comment"># 红led</span></span><br><span class="line">bled = LED(<span class="number">2</span>) <span class="comment"># 绿led</span></span><br><span class="line">gled = LED(<span class="number">3</span>) <span class="comment"># 蓝led</span></span><br><span class="line"></span><br><span class="line">tim = Timer(<span class="number">4</span>, freq=<span class="number">1</span>) <span class="comment"># 1Hz触发TIM4定时器</span></span><br><span class="line">tim.callback(<span class="keyword">lambda</span> t: rled.toggle())</span><br><span class="line"></span><br><span class="line">clock = time.clock()</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">    clock.tick()</span><br><span class="line">    </span><br><span class="line">    bled.on()</span><br><span class="line">    gled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    gled.on()</span><br><span class="line">    bled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(clock.fps())</span><br></pre></td></tr></table></figure>
+
+<h1 id="k210"><a href="#k210" class="headerlink" title="k210"></a>k210</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>1、概述</strong></p>
+<p>嘉楠科技：<a href="https://www.canaan-creative.com/">嘉楠科技</a></p>
+<p>勘智K210：<a href="https://www.canaan-creative.com/product/kendryteai">勘智K210</a></p>
+<p>K210视觉识别模块：<a href="https://www.yahboom.com/tbdetails?id=546">K210视觉识别模块</a></p>
+<p>购买：<a href="https://detail.tmall.com/item.htm?id=711688603937">亚博智能 K210视觉识别模块CanMV传感器AI机器摄像头Python开发板</a></p>
+<p><strong>2、学习资料</strong></p>
+<p>K210视觉识别模块教程：<a href="https://www.yahboom.com/study/K210-AI-Camera">K210视觉识别模块学习专区 - 亚博智能</a></p>
+<p>CanMV文档：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
+<p>CanMV API 手册：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
+<h2 id="数字识别"><a href="#数字识别" class="headerlink" title="数字识别"></a>数字识别</h2><p><strong>1、介绍</strong></p>
+<p>自主学习分类：<a href="https://www.yahboom.com/build.html?id=6145&cid=580">自主学习分类</a></p>
+<p><strong>2、模型训练</strong></p>
+<p>哔哩哔哩教程：<a href="https://www.bilibili.com/video/BV1Ga4y1H79J/?spm_id_from=333.337.search-card.all.click&vd_source=c6a75c082f96f79b814a4b6c18035936">基于MaixHub与K210模型训练和实时目标检测（入门版）</a></p>
+<p>MaixHub：<a href="https://maixhub.com/">https://maixhub.com/</a></p>
+<p>labelimg 下载：<a href="https://blog.csdn.net/dulingwen/article/details/88840703">Windows 10下安装labelImg标注工具！</a></p>
+<div class="note info no-icon flat"><p>模型训练：<a href="https://qichenxi.blog.csdn.net/article/details/121044449">Mx-yolov3+Maixpy+ K210进行本地模型训练和目标检测</a></p>
+<p>大佬博客：<a href="https://qichenxi.blog.csdn.net/?type=blog">我与nano</a></p>
+<p>Sipeed 资料站：<a href="https://wiki.sipeed.com/">Sipeed 资料站 - Sipeed Wiki</a></p>
+</div>]]></content>
+      <categories>
+        <category>大学生电子设计竞赛</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>verilog编写猫狗过河实验</title>
     <url>/posts/34498.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>源代码地址：<a href="https://github.com/penggeon/catanddog">https://github.com/penggeon/catanddog</a></p>
 <p><a href="https://github.com/penggeon/catanddog"><img src="/images/loading.gif" data-original="https://github-readme-stats.vercel.app/api/pin/?username=penggeon&repo=catanddog" alt="catanddog"></a></p>
-<div class="note warning no-icon modern"><p>仅给出了实验过程的源代码，需手动复制粘贴至自己项目中。</p>
+<div class="note warning no-icon flat"><p>仅给出了实验过程的源代码，需手动复制粘贴至自己项目中。</p>
 <p>主模块默认名为 <code>catanddog</code>，若需使用请自行修改。</p>
 </div>
 
@@ -523,62 +579,6 @@
 ]]></content>
       <tags>
         <tag>verilog</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>视觉模块</title>
-    <url>/posts/6413.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="openmv"><a href="#openmv" class="headerlink" title="openmv"></a>openmv</h1><h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><strong>1、网址</strong></p>
-<p>中文官网：<a href="https://singtown.com/openmv/">星瞳科技</a></p>
-<p>教程：<a href="https://book.openmv.cc/quick-starter.html">上手教程</a></p>
-<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/index.html">中文文档</a></p>
-<p>所有对象及方法：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/index.html#openmv-cam">特定于OpenMV Cam的库</a></p>
-<p><strong>2、查找手册</strong></p>
-<p>所有外设概述：<a href="https://book.openmv.cc/MCU/pyb.html">pyb各种外设</a></p>
-<p>串口：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.UART.html">UART类 – 双向串行通信总线</a></p>
-<p>电机：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.Servo.html">Servo类 –三线hobby舵机驱动</a></p>
-<h2 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h2><p>寻找色块：<a href="https://book.openmv.cc/quick-starter.html#%E8%BF%BD%E8%B8%AA%E5%B0%8F%E7%90%83">追踪小球</a> （官网写着追踪小球，但其实是寻找色块）</p>
-<p>模版匹配（单）：<a href="https://book.openmv.cc/image/template-match.html">模版匹配NCC</a></p>
-<p>模版匹配（多）：<a href="https://book.openmv.cc/image/mulity-template-match.html">多模版匹配NCC</a></p>
-<p>串口通信（只发送一个字节）：<a href="https://book.openmv.cc/MCU/serial1.html#%E4%BB%8B%E7%BB%8D">介绍</a></p>
-<p>巡线小车：<a href="https://book.openmv.cc/project/follow-lines.html#%E8%B0%83%E6%95%B4%E5%8F%82%E6%95%B0%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%B7%9F%E9%9A%8F">巡线小车</a></p>
-<h2 id="代码注解"><a href="#代码注解" class="headerlink" title="代码注解"></a>代码注解</h2><p><strong>1、JSON</strong></p>
-<p>以下的代码即可完成JSON的转换。</p>
-<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html">https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html</a></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">json.dumps(your_data)</span><br></pre></td></tr></table></figure>
-
-<p>有时可以使用python的字符串格式化的功能代替JSON，例如下面的代码是一样的。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">output_str=<span class="string">&quot;[%d,%d]&quot;</span> % (max_blob.cx(),max_blob.cy()) <span class="comment">#方式1</span></span><br><span class="line">output_str=json.dumps([max_blob.cx(),max_blob.cy()]) <span class="comment">#方式2</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>2、其他</strong></p>
-<p>自己学的时候写了个定时器定时中断控制灯的代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pyb</span><br><span class="line"><span class="keyword">from</span> pyb <span class="keyword">import</span> LED, Timer</span><br><span class="line"></span><br><span class="line">rled = LED(<span class="number">1</span>) <span class="comment"># 红led</span></span><br><span class="line">bled = LED(<span class="number">2</span>) <span class="comment"># 绿led</span></span><br><span class="line">gled = LED(<span class="number">3</span>) <span class="comment"># 蓝led</span></span><br><span class="line"></span><br><span class="line">tim = Timer(<span class="number">4</span>, freq=<span class="number">1</span>) <span class="comment"># 1Hz触发TIM4定时器</span></span><br><span class="line">tim.callback(<span class="keyword">lambda</span> t: rled.toggle())</span><br><span class="line"></span><br><span class="line">clock = time.clock()</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">    clock.tick()</span><br><span class="line">    </span><br><span class="line">    bled.on()</span><br><span class="line">    gled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    gled.on()</span><br><span class="line">    bled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(clock.fps())</span><br></pre></td></tr></table></figure>
-
-<h1 id="k210"><a href="#k210" class="headerlink" title="k210"></a>k210</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>1、概述</strong></p>
-<p>嘉楠科技：<a href="https://www.canaan-creative.com/">嘉楠科技</a></p>
-<p>勘智K210：<a href="https://www.canaan-creative.com/product/kendryteai">勘智K210</a></p>
-<p>K210视觉识别模块：<a href="https://www.yahboom.com/tbdetails?id=546">K210视觉识别模块</a></p>
-<p>购买：<a href="https://detail.tmall.com/item.htm?id=711688603937">亚博智能 K210视觉识别模块CanMV传感器AI机器摄像头Python开发板</a></p>
-<p><strong>2、学习资料</strong></p>
-<p>K210视觉识别模块教程：<a href="https://www.yahboom.com/study/K210-AI-Camera">K210视觉识别模块学习专区 - 亚博智能</a></p>
-<p>CanMV文档：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
-<p>CanMV API 手册：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
-<h2 id="数字识别"><a href="#数字识别" class="headerlink" title="数字识别"></a>数字识别</h2><p><strong>1、介绍</strong></p>
-<p>自主学习分类：<a href="https://www.yahboom.com/build.html?id=6145&cid=580">自主学习分类</a></p>
-<p><strong>2、模型训练</strong></p>
-<p>哔哩哔哩教程：<a href="https://www.bilibili.com/video/BV1Ga4y1H79J/?spm_id_from=333.337.search-card.all.click&vd_source=c6a75c082f96f79b814a4b6c18035936">基于MaixHub与K210模型训练和实时目标检测（入门版）</a></p>
-<p>MaixHub：<a href="https://maixhub.com/">https://maixhub.com/</a></p>
-<p>labelimg 下载：<a href="https://blog.csdn.net/dulingwen/article/details/88840703">Windows 10下安装labelImg标注工具！</a></p>
-<div class="note info no-icon modern"><p>模型训练：<a href="https://qichenxi.blog.csdn.net/article/details/121044449">Mx-yolov3+Maixpy+ K210进行本地模型训练和目标检测</a></p>
-<p>大佬博客：<a href="https://qichenxi.blog.csdn.net/?type=blog">我与nano</a></p>
-<p>Sipeed 资料站：<a href="https://wiki.sipeed.com/">Sipeed 资料站 - Sipeed Wiki</a></p>
-</div>]]></content>
-      <categories>
-        <category>大学生电子设计竞赛</category>
-      </categories>
-      <tags>
-        <tag>单片机</tag>
-        <tag>嵌入式</tag>
       </tags>
   </entry>
 </search>
