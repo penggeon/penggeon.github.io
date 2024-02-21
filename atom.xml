@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>penggeon的鸽巢</title>
+  <icon>https://penggeon.top/icon.png</icon>
+  
+  <link href="https://penggeon.top/atom.xml" rel="self"/>
+  
+  <link href="https://penggeon.top/"/>
+  <updated>2024-02-20T07:05:49.226Z</updated>
+  <id>https://penggeon.top/</id>
+  
+  <author>
+    <name>penggeon</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>verilog常用模块总结</title>
+    <link href="https://penggeon.top/posts/27859.html"/>
+    <id>https://penggeon.top/posts/27859.html</id>
+    <published>2024-02-18T05:28:00.000Z</published>
+    <updated>2024-02-20T07:05:49.226Z</updated>
+    
+    
+    <summary type="html">Verilog 常用模块总结。</summary>
+    
+    
+    
+    
+    <category term="verilog" scheme="https://penggeon.top/tags/verilog/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>verilog编写猫狗过河实验</title>
+    <link href="https://penggeon.top/posts/34498.html"/>
+    <id>https://penggeon.top/posts/34498.html</id>
+    <published>2024-02-18T05:27:00.000Z</published>
+    <updated>2024-02-18T06:34:59.245Z</updated>
+    
+    
+    <summary type="html">verilog编写猫狗过河实验</summary>
+    
+    
+    
+    
+    <category term="verilog" scheme="https://penggeon.top/tags/verilog/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>视觉模块</title>
+    <link href="https://penggeon.top/posts/6413.html"/>
+    <id>https://penggeon.top/posts/6413.html</id>
+    <published>2024-02-18T05:26:00.000Z</published>
+    <updated>2024-02-18T06:34:59.248Z</updated>
+    
+    
+    <summary type="html">openmv 和 k210 是视觉算法常见的两个解决方案。</summary>
+    
+    
+    
+    <category term="大学生电子设计竞赛" scheme="https://penggeon.top/categories/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E7%AB%9E%E8%B5%9B/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>STM32中的预编译</title>
+    <link href="https://penggeon.top/posts/48839.html"/>
+    <id>https://penggeon.top/posts/48839.html</id>
+    <published>2024-02-18T05:25:00.000Z</published>
+    <updated>2024-02-18T06:34:59.240Z</updated>
+    
+    
+    <summary type="html">stm32 代码里常常使用预编译命令来帮助我们更好的开发。而且我一时直接也分不太清 if 和 if defined 的区别，看了好久才搞懂。</summary>
+    
+    
+    
+    <category term="大学生电子设计竞赛" scheme="https://penggeon.top/categories/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E7%AB%9E%E8%B5%9B/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+    <category term="STM32" scheme="https://penggeon.top/tags/STM32/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>STM32 CubeMX及HAL库学习</title>
+    <link href="https://penggeon.top/posts/3906.html"/>
+    <id>https://penggeon.top/posts/3906.html</id>
+    <published>2024-02-18T05:24:00.000Z</published>
+    <updated>2024-02-18T06:34:59.236Z</updated>
+    
+    
+    <summary type="html">记录有关STM32 HAL库学习的资源，方便查看。</summary>
+    
+    
+    
+    <category term="大学生电子设计竞赛" scheme="https://penggeon.top/categories/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E7%AB%9E%E8%B5%9B/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+    <category term="STM32" scheme="https://penggeon.top/tags/STM32/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>STM32标准库学习</title>
+    <link href="https://penggeon.top/posts/20930.html"/>
+    <id>https://penggeon.top/posts/20930.html</id>
+    <published>2024-02-18T05:23:00.000Z</published>
+    <updated>2024-02-18T06:34:59.250Z</updated>
+    
+    
+    <summary type="html">STM32 标准库学习，包括固件库函数的介绍和基本使用。</summary>
+    
+    
+    
+    <category term="大学生电子设计竞赛" scheme="https://penggeon.top/categories/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E7%AB%9E%E8%B5%9B/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+    <category term="STM32" scheme="https://penggeon.top/tags/STM32/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>STM32入门</title>
+    <link href="https://penggeon.top/posts/7474.html"/>
+    <id>https://penggeon.top/posts/7474.html</id>
+    <published>2024-02-18T05:18:00.000Z</published>
+    <updated>2024-02-18T06:34:59.243Z</updated>
+    
+    
+    <summary type="html">使用 STM32F103C8T6 芯片，若芯片不同，可去 ST 官网搜索自己的芯片手册</summary>
+    
+    
+    
+    <category term="大学生电子设计竞赛" scheme="https://penggeon.top/categories/%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E7%AB%9E%E8%B5%9B/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+    <category term="STM32" scheme="https://penggeon.top/tags/STM32/"/>
+    
+  </entry>
+  
+</feed>
