@@ -6,7 +6,7 @@
   <link href="https://penggeon.top/atom.xml" rel="self"/>
   
   <link href="https://penggeon.top/"/>
-  <updated>2024-02-20T07:05:49.226Z</updated>
+  <updated>2024-03-26T11:04:55.173Z</updated>
   <id>https://penggeon.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>STM32实战——DHT11温湿度获取并展示</title>
+    <link href="https://penggeon.top/posts/af59e567.html"/>
+    <id>https://penggeon.top/posts/af59e567.html</id>
+    <published>2024-03-26T10:55:00.000Z</published>
+    <updated>2024-03-26T11:04:55.173Z</updated>
+    
+    
+    <summary type="html">DHT11数字温湿度传感器是一款含有已校准数字信号输出的温湿度复合传感器，包括一个电阻式感湿元件和一个NTC测温元件，可以用来测量温度和湿度。</summary>
+    
+    
+    
+    <category term="STM32" scheme="https://penggeon.top/categories/STM32/"/>
+    
+    
+    <category term="单片机" scheme="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+    <category term="嵌入式" scheme="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/"/>
+    
+    <category term="STM32" scheme="https://penggeon.top/tags/STM32/"/>
+    
+    <category term="DHT11" scheme="https://penggeon.top/tags/DHT11/"/>
+    
+  </entry>
   
   <entry>
     <title>verilog常用模块总结</title>

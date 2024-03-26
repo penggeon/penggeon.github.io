@@ -165,6 +165,120 @@
       </tags>
   </entry>
   <entry>
+    <title>STM32实战——DHT11温湿度获取并展示</title>
+    <url>/posts/af59e567.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>DHT11数字温湿度传感器是一款含有已校准数字信号输出的温湿度复合传感器，包括一个电阻式感湿元件和一个NTC测温元件，可以用来测量温度和湿度。</p>
+<h1 id="硬件连线"><a href="#硬件连线" class="headerlink" title="硬件连线"></a>硬件连线</h1><div class="note warning flat"><p>本实验使用STM32F103C8T6芯片作为主控，使用DHT11（带上拉电阻）模块作为温湿度采集装置。</p>
+</div>
+
+<p>接线如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>STM32</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VCC</td>
+<td>3.3V</td>
+<td>供电 3.3V</td>
+</tr>
+<tr>
+<td>OUT</td>
+<td>PB13（任意一个GPIO口即可）</td>
+<td>串行数据</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>GDN</td>
+<td>接地</td>
+</tr>
+</tbody></table>
+<p>由于使用了上拉电阻，因此STM32与DHT11的通信类似于软件模拟IIC通信协议。使用开漏输出模式（OD）控制PB13的高低电平。（如果不懂什么是软件模拟IIC的话，请移步<a href="https://www.bilibili.com/video/BV1th411z7sn?p=33&vd_source=c6a75c082f96f79b814a4b6c18035936">软件I2C读写MPU6050_哔哩哔哩_bilibili</a>）</p>
+<h1 id="DHT11"><a href="#DHT11" class="headerlink" title="DHT11"></a>DHT11</h1><p>本教程使用DHT11模块如下图所示：</p>
+<p><img src="/images/loading.gif" data-original="https://s2.loli.net/2024/03/26/iROLcDfXh7xzI3Z.png"></p>
+<h2 id="DHT11协议"><a href="#DHT11协议" class="headerlink" title="DHT11协议"></a>DHT11协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>STM32与 DHT11之间的通信，采用单总线数据格式，一次通信时间4ms左右。</p>
+<p>总体通信流程为：开始信号-&gt;响应信号-&gt;数据传输。</p>
+<p>STM32发送一次开始信号后，DHT11从低功耗模式转换到高速模式，等待主机开始信号结束。DHT11发送响应信号，送出40bit的数据，并触发一次信号采集，用户可选择读取部分数据。</p>
+<p>注：DHT11接收到开始信号触发一次温湿度采集，如果没有接收到主机发送开始信号，DHT11不会主动进行温湿度采集。采集数据后转换到低速模式。</p>
+<p>总体操作时序如下图所示：</p>
+<p><img src="/images/loading.gif" data-original="https://s2.loli.net/2024/03/26/dnZHQ2lNt3UcBKI.png"></p>
+<h3 id="开始信号（STM32控制总线）"><a href="#开始信号（STM32控制总线）" class="headerlink" title="开始信号（STM32控制总线）"></a>开始信号（STM32控制总线）</h3><p>首先主机拉低总线至少 18ms，然后再拉高总线，延时 20~40us，取中间值 30us，此时复位信号发送完毕。</p>
+<div class="note warning flat"><p>是拉低总线18毫秒，不是18微秒，搞错的话是不能正常通信的！</p>
+</div>
+
+<h3 id="响应信号（DHT11控制总线）"><a href="#响应信号（DHT11控制总线）" class="headerlink" title="响应信号（DHT11控制总线）"></a>响应信号（DHT11控制总线）</h3><p>DHT11 检测到复位信号后，触发一次采样，并拉低总线 80us 表示响应信号，告诉主机数据已经准备好了；然后 DHT11 拉高总线 80us，之后开始传输数据。</p>
+<h3 id="数据传输（DHT11控制总线）"><a href="#数据传输（DHT11控制总线）" class="headerlink" title="数据传输（DHT11控制总线）"></a>数据传输（DHT11控制总线）</h3><p>之后，每 1bit 数据都以 50us 低电平时隙开始。</p>
+<p>DHT11 以高电平的长短定义数据位是 0 还是 1。当 50us 低电平时隙过后拉高总线，高电平持续 26~28us 表示数据“0”；持续 70us 表示数据“1”。如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>输出</th>
+<th>表示方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数字0</td>
+<td>50us低电平开始后，26-28us的高电平表示0</td>
+</tr>
+<tr>
+<td>数字1</td>
+<td>50us低电平开始后，70us的高电平表示1</td>
+</tr>
+</tbody></table>
+<p><img src="/images/loading.gif" data-original="https://s2.loli.net/2024/03/26/3DymnGqYacRJhO2.png"></p>
+<h3 id="数据传输结束"><a href="#数据传输结束" class="headerlink" title="数据传输结束"></a>数据传输结束</h3><p>当最后一bit数据传送完毕后，DHT11拉低总线50us，随后释放总线，由上拉电阻拉高进入空闲状态。</p>
+<h2 id="DHT11数据格式"><a href="#DHT11数据格式" class="headerlink" title="DHT11数据格式"></a>DHT11数据格式</h2><p>一次完整的数据传输为40bit,高位先出。数据分小数部分和整数部分，数据格式:</p>
+<ul>
+<li>8bit湿度整数数据</li>
+<li>8bit湿度小数数据</li>
+<li>8bit温度整数数据</li>
+<li>8bit温度小数数据</li>
+<li>8bit校验和</li>
+</ul>
+<p>若数据传送正确，则</p>
+<p>校验和数据 &#x3D; “8bit 湿度整数数据 +8bit 湿度小数数据+8bit温度整数数据 +8bit 温度小数数据”所得结果的末8位。</p>
+<h1 id="STM32代码"><a href="#STM32代码" class="headerlink" title="STM32代码"></a>STM32代码</h1><div class="note info flat"><p>将Tab缩进更改为2空格体验更好。</p>
+</div>
+
+<div class="note warning flat"><p>需要添加delay.h、oled.h等头文件时，还请自行添加。</p>
+</div>
+
+<h2 id="DHT11驱动代码"><a href="#DHT11驱动代码" class="headerlink" title="DHT11驱动代码"></a>DHT11驱动代码</h2><h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><p>宏定义“使用引脚”和“控制IO输出1和0的函数”</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __DHT11_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __DHT11_H</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义引脚</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DHT11_GPIO_Port GPIOB</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DHT11_GPIO_Pin GPIO_Pin_13</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义函数</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> dht11_high GPIO_SetBits(DHT11_GPIO_Port, DHT11_GPIO_Pin)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> dht11_low GPIO_ResetBits(DHT11_GPIO_Port, DHT11_GPIO_Pin)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DHT11_IN GPIO_ReadInputDataBit(DHT11_GPIO_Port, DHT11_GPIO_Pin)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">DH11_GPIO_Init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11RstAndCheck</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11ReadByte</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11ReadData</span><span class="params">(<span class="type">uint8_t</span> *Temp_H,<span class="type">uint8_t</span> *Temp_L,<span class="type">uint8_t</span> *Humi_H,<span class="type">uint8_t</span> *Humi_L)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>初始化DHT11使用引脚</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	* @brief  初始化DHT11</span></span><br><span class="line"><span class="comment">	* @param  无</span></span><br><span class="line"><span class="comment">	* @retval 无</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">DH11_GPIO_Init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// 开启APB2中的GPIOB时钟</span></span><br><span class="line">	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 配置GPIO PB12</span></span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_OD; <span class="comment">// 开漏输出</span></span><br><span class="line">	GPIO_InitStructure.GPIO_Pin   = DHT11_GPIO_Pin;</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;</span><br><span class="line">	</span><br><span class="line">	GPIO_Init(DHT11_GPIO_Port, &amp;GPIO_InitStructure);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="复位和检查响应"><a href="#复位和检查响应" class="headerlink" title="复位和检查响应"></a>复位和检查响应</h3><p>该函数将“STM32发送开始信号”与“STM32接受响应信号”放置一起</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	* @brief  复位和检测响应</span></span><br><span class="line"><span class="comment">	* @param  无</span></span><br><span class="line"><span class="comment">	* @retval 1:响应成功, 0:响应失败</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11RstAndCheck</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">uint8_t</span> timer = <span class="number">0</span>;		<span class="comment">// 计数器</span></span><br><span class="line"></span><br><span class="line">	__set_PRIMASK(<span class="number">1</span>);     <span class="comment">// 关总中断</span></span><br><span class="line">	dht11_low; 	          <span class="comment">// 输出低电平</span></span><br><span class="line">	Delay_ms(<span class="number">20</span>);    	    <span class="comment">// 拉低至少18ms</span></span><br><span class="line">	dht11_high; 	        <span class="comment">// 输出高电平</span></span><br><span class="line">	Delay_us(<span class="number">30</span>);     	  <span class="comment">// 拉高20~40us</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 检测是否存在第一个低电平</span></span><br><span class="line">	<span class="keyword">while</span> (!DHT11_IN)     <span class="comment">// 等待总线拉低，DHT11会拉低40~80us作为响应信号</span></span><br><span class="line">	&#123;</span><br><span class="line">		timer++;            <span class="comment">// 总线拉低时计数</span></span><br><span class="line">		Delay_us(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (timer&gt;<span class="number">100</span> || timer&lt;<span class="number">20</span>) <span class="comment">// 判断响应时间</span></span><br><span class="line">	&#123;</span><br><span class="line">		__set_PRIMASK(<span class="number">0</span>);      <span class="comment">// 开总中断</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 检测是否存在第二个高电平</span></span><br><span class="line">	timer = <span class="number">0</span>;	<span class="comment">// 重置计数器</span></span><br><span class="line">	<span class="keyword">while</span> (DHT11_IN)          <span class="comment">// 等待DHT11释放总线，持续时间40~80us</span></span><br><span class="line">	&#123;</span><br><span class="line">		timer++;               	<span class="comment">// 总线拉高时计数</span></span><br><span class="line">		Delay_us(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	__set_PRIMASK(<span class="number">0</span>);          <span class="comment">// 开总中断</span></span><br><span class="line">	<span class="keyword">if</span> (timer&gt;<span class="number">100</span> || timer&lt;<span class="number">20</span>) <span class="comment">// 检测响应信号之后的高电平</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 均存在, 则返回1, 响应正常</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取一个字节数据"><a href="#获取一个字节数据" class="headerlink" title="获取一个字节数据"></a>获取一个字节数据</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * @brief  读取一字节数据</span></span><br><span class="line"><span class="comment">	* @param  无</span></span><br><span class="line"><span class="comment">	* @retval 读到的数据</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11ReadByte</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">uint8_t</span> i;</span><br><span class="line">	<span class="type">uint8_t</span> byt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	__set_PRIMASK(<span class="number">1</span>);      <span class="comment">// 关总中断</span></span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">8</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span> (DHT11_IN);  <span class="comment">// 等待低电平，数据位前都有50us低电平时隙</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span> (!DHT11_IN); <span class="comment">// 等待高电平，开始传输数据位</span></span><br><span class="line"></span><br><span class="line">		Delay_us(<span class="number">40</span>);</span><br><span class="line">		byt &lt;&lt;= <span class="number">1</span>;         <span class="comment">// 因高位在前，所以左移byt，最低位补0</span></span><br><span class="line">		<span class="keyword">if</span> (DHT11_IN)      <span class="comment">// 将总线电平值读取到byt最低位中</span></span><br><span class="line">		&#123;</span><br><span class="line">			byt |= <span class="number">0x01</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	__set_PRIMASK(<span class="number">0</span>);      <span class="comment">// 开总中断</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> byt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取DHT11全部数据"><a href="#获取DHT11全部数据" class="headerlink" title="获取DHT11全部数据"></a>获取DHT11全部数据</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * @brief  读取数据</span></span><br><span class="line"><span class="comment">	* @param  Temp_H 温度整数部分</span></span><br><span class="line"><span class="comment">	* @param  Temp_L 温度小数部分</span></span><br><span class="line"><span class="comment">  * @param  Humi_H 湿度整数部分</span></span><br><span class="line"><span class="comment">  * @param  Humi_L 湿度小数部分</span></span><br><span class="line"><span class="comment">	* @retval 0-成功，1-失败</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">DHT11ReadData</span><span class="params">(<span class="type">uint8_t</span> *Temp_H,<span class="type">uint8_t</span> *Temp_L,<span class="type">uint8_t</span> *Humi_H,<span class="type">uint8_t</span> *Humi_L)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">uint8_t</span> sta = <span class="number">0</span>;</span><br><span class="line">	<span class="type">uint8_t</span> i;</span><br><span class="line">	<span class="type">uint8_t</span> buf[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (DHT11RstAndCheck())       <span class="comment">// 检测响应信号</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)            <span class="comment">// 读取40位数据</span></span><br><span class="line">		&#123;</span><br><span class="line">			buf[i]=DHT11ReadByte(); 	<span class="comment">// 读取1字节数据</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(buf[<span class="number">0</span>]+buf[<span class="number">1</span>]+buf[<span class="number">2</span>]+buf[<span class="number">3</span>] == buf[<span class="number">4</span>]) <span class="comment">// 校验成功</span></span><br><span class="line">		&#123;</span><br><span class="line">			*Humi_H = buf[<span class="number">0</span>]; <span class="comment">// 湿度 整数部分数据</span></span><br><span class="line">			*Humi_L = buf[<span class="number">1</span>]; <span class="comment">// 湿度 小数部分数据</span></span><br><span class="line">			*Temp_H = buf[<span class="number">2</span>]; <span class="comment">// 温度 整数部分数据</span></span><br><span class="line">			*Temp_L = buf[<span class="number">3</span>]; <span class="comment">// 温度 小数部分数据</span></span><br><span class="line">		&#125;</span><br><span class="line">		sta = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="comment">// 响应失败返回-1</span></span><br><span class="line">	&#123;</span><br><span class="line">		*Temp_H = <span class="number">0</span>;</span><br><span class="line">		*Temp_L = <span class="number">0</span>;</span><br><span class="line">		*Humi_H = <span class="number">0</span>;</span><br><span class="line">		*Humi_L = <span class="number">0</span>;</span><br><span class="line">		sta = <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> sta;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	DH11_GPIO_Init(); <span class="comment">// DHT11初始化</span></span><br><span class="line">	<span class="type">uint8_t</span> Temp_H = <span class="number">0</span>;</span><br><span class="line">	<span class="type">uint8_t</span> Temp_L = <span class="number">0</span>;</span><br><span class="line">	<span class="type">uint8_t</span> Humi_H = <span class="number">0</span>;</span><br><span class="line">	<span class="type">uint8_t</span> Humi_L = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取数据</span></span><br><span class="line">		DHT11ReadData(Temp_H,Temp_L,Humi_H,Humi_L);</span><br><span class="line">		<span class="comment">// 显示温湿度数据</span></span><br><span class="line">		OLED_ShowNum(<span class="number">1</span>,<span class="number">7</span>,Temp_H,<span class="number">2</span>);	 	<span class="comment">// 温度 整数部分</span></span><br><span class="line">		OLED_ShowNum(<span class="number">1</span>,<span class="number">10</span>,Temp_L,<span class="number">1</span>);	<span class="comment">// 温度 小数部分</span></span><br><span class="line">		OLED_ShowNum(<span class="number">2</span>,<span class="number">7</span>,Humi_H,<span class="number">2</span>);  	<span class="comment">// 湿度 整数部分</span></span><br><span class="line">		OLED_ShowNum(<span class="number">2</span>,<span class="number">10</span>,Humi_L,<span class="number">1</span>); 	<span class="comment">// 湿度 小数部分</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="实验效果"><a href="#实验效果" class="headerlink" title="实验效果"></a>实验效果</h1><p>实验效果如下图所示：</p>
+<p><img src="/images/loading.gif" data-original="https://s2.loli.net/2024/03/26/sE17GeSbok5aFPl.jpg"></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p>本实验实现过程中参考：</p>
+<p><a href="https://blog.csdn.net/m0_55849362/article/details/126426768">DHT11详细介绍（内含51和STM32代码）-CSDN博客</a></p>
+<p><a href="https://blog.csdn.net/hbsyaaa/article/details/123966347">STM32外接DHT11显示温湿度_stm32与dht11连接用了什么协议-CSDN博客</a></p>
+<p>如果有什么问题和建议，还请读者指出</p>
+]]></content>
+      <categories>
+        <category>STM32</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
+        <tag>STM32</tag>
+        <tag>DHT11</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STM32标准库学习</title>
     <url>/posts/20930.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="stm32-固件库函数介绍"><a href="#stm32-固件库函数介绍" class="headerlink" title="stm32 固件库函数介绍"></a>stm32 固件库函数介绍</h1><p><strong>1、RCC</strong></p>
@@ -411,62 +525,6 @@
       </tags>
   </entry>
   <entry>
-    <title>视觉模块</title>
-    <url>/posts/6413.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="openmv"><a href="#openmv" class="headerlink" title="openmv"></a>openmv</h1><h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><strong>1、网址</strong></p>
-<p>中文官网：<a href="https://singtown.com/openmv/">星瞳科技</a></p>
-<p>教程：<a href="https://book.openmv.cc/quick-starter.html">上手教程</a></p>
-<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/index.html">中文文档</a></p>
-<p>所有对象及方法：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/index.html#openmv-cam">特定于OpenMV Cam的库</a></p>
-<p><strong>2、查找手册</strong></p>
-<p>所有外设概述：<a href="https://book.openmv.cc/MCU/pyb.html">pyb各种外设</a></p>
-<p>串口：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.UART.html">UART类 – 双向串行通信总线</a></p>
-<p>电机：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.Servo.html">Servo类 –三线hobby舵机驱动</a></p>
-<h2 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h2><p>寻找色块：<a href="https://book.openmv.cc/quick-starter.html#%E8%BF%BD%E8%B8%AA%E5%B0%8F%E7%90%83">追踪小球</a> （官网写着追踪小球，但其实是寻找色块）</p>
-<p>模版匹配（单）：<a href="https://book.openmv.cc/image/template-match.html">模版匹配NCC</a></p>
-<p>模版匹配（多）：<a href="https://book.openmv.cc/image/mulity-template-match.html">多模版匹配NCC</a></p>
-<p>串口通信（只发送一个字节）：<a href="https://book.openmv.cc/MCU/serial1.html#%E4%BB%8B%E7%BB%8D">介绍</a></p>
-<p>巡线小车：<a href="https://book.openmv.cc/project/follow-lines.html#%E8%B0%83%E6%95%B4%E5%8F%82%E6%95%B0%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%B7%9F%E9%9A%8F">巡线小车</a></p>
-<h2 id="代码注解"><a href="#代码注解" class="headerlink" title="代码注解"></a>代码注解</h2><p><strong>1、JSON</strong></p>
-<p>以下的代码即可完成JSON的转换。</p>
-<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html">https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html</a></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">json.dumps(your_data)</span><br></pre></td></tr></table></figure>
-
-<p>有时可以使用python的字符串格式化的功能代替JSON，例如下面的代码是一样的。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">output_str=<span class="string">&quot;[%d,%d]&quot;</span> % (max_blob.cx(),max_blob.cy()) <span class="comment">#方式1</span></span><br><span class="line">output_str=json.dumps([max_blob.cx(),max_blob.cy()]) <span class="comment">#方式2</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>2、其他</strong></p>
-<p>自己学的时候写了个定时器定时中断控制灯的代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pyb</span><br><span class="line"><span class="keyword">from</span> pyb <span class="keyword">import</span> LED, Timer</span><br><span class="line"></span><br><span class="line">rled = LED(<span class="number">1</span>) <span class="comment"># 红led</span></span><br><span class="line">bled = LED(<span class="number">2</span>) <span class="comment"># 绿led</span></span><br><span class="line">gled = LED(<span class="number">3</span>) <span class="comment"># 蓝led</span></span><br><span class="line"></span><br><span class="line">tim = Timer(<span class="number">4</span>, freq=<span class="number">1</span>) <span class="comment"># 1Hz触发TIM4定时器</span></span><br><span class="line">tim.callback(<span class="keyword">lambda</span> t: rled.toggle())</span><br><span class="line"></span><br><span class="line">clock = time.clock()</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">    clock.tick()</span><br><span class="line">    </span><br><span class="line">    bled.on()</span><br><span class="line">    gled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    gled.on()</span><br><span class="line">    bled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(clock.fps())</span><br></pre></td></tr></table></figure>
-
-<h1 id="k210"><a href="#k210" class="headerlink" title="k210"></a>k210</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>1、概述</strong></p>
-<p>嘉楠科技：<a href="https://www.canaan-creative.com/">嘉楠科技</a></p>
-<p>勘智K210：<a href="https://www.canaan-creative.com/product/kendryteai">勘智K210</a></p>
-<p>K210视觉识别模块：<a href="https://www.yahboom.com/tbdetails?id=546">K210视觉识别模块</a></p>
-<p>购买：<a href="https://detail.tmall.com/item.htm?id=711688603937">亚博智能 K210视觉识别模块CanMV传感器AI机器摄像头Python开发板</a></p>
-<p><strong>2、学习资料</strong></p>
-<p>K210视觉识别模块教程：<a href="https://www.yahboom.com/study/K210-AI-Camera">K210视觉识别模块学习专区 - 亚博智能</a></p>
-<p>CanMV文档：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
-<p>CanMV API 手册：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
-<h2 id="数字识别"><a href="#数字识别" class="headerlink" title="数字识别"></a>数字识别</h2><p><strong>1、介绍</strong></p>
-<p>自主学习分类：<a href="https://www.yahboom.com/build.html?id=6145&cid=580">自主学习分类</a></p>
-<p><strong>2、模型训练</strong></p>
-<p>哔哩哔哩教程：<a href="https://www.bilibili.com/video/BV1Ga4y1H79J/?spm_id_from=333.337.search-card.all.click&vd_source=c6a75c082f96f79b814a4b6c18035936">基于MaixHub与K210模型训练和实时目标检测（入门版）</a></p>
-<p>MaixHub：<a href="https://maixhub.com/">https://maixhub.com/</a></p>
-<p>labelimg 下载：<a href="https://blog.csdn.net/dulingwen/article/details/88840703">Windows 10下安装labelImg标注工具！</a></p>
-<div class="note info no-icon flat"><p>模型训练：<a href="https://qichenxi.blog.csdn.net/article/details/121044449">Mx-yolov3+Maixpy+ K210进行本地模型训练和目标检测</a></p>
-<p>大佬博客：<a href="https://qichenxi.blog.csdn.net/?type=blog">我与nano</a></p>
-<p>Sipeed 资料站：<a href="https://wiki.sipeed.com/">Sipeed 资料站 - Sipeed Wiki</a></p>
-</div>]]></content>
-      <categories>
-        <category>大学生电子设计竞赛</category>
-      </categories>
-      <tags>
-        <tag>单片机</tag>
-        <tag>嵌入式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>verilog编写猫狗过河实验</title>
     <url>/posts/34498.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><p>源代码地址：<a href="https://github.com/penggeon/catanddog">https://github.com/penggeon/catanddog</a></p>
@@ -579,6 +637,62 @@
 ]]></content>
       <tags>
         <tag>verilog</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>视觉模块</title>
+    <url>/posts/6413.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="openmv"><a href="#openmv" class="headerlink" title="openmv"></a>openmv</h1><h2 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h2><p><strong>1、网址</strong></p>
+<p>中文官网：<a href="https://singtown.com/openmv/">星瞳科技</a></p>
+<p>教程：<a href="https://book.openmv.cc/quick-starter.html">上手教程</a></p>
+<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/index.html">中文文档</a></p>
+<p>所有对象及方法：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/index.html#openmv-cam">特定于OpenMV Cam的库</a></p>
+<p><strong>2、查找手册</strong></p>
+<p>所有外设概述：<a href="https://book.openmv.cc/MCU/pyb.html">pyb各种外设</a></p>
+<p>串口：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.UART.html">UART类 – 双向串行通信总线</a></p>
+<p>电机：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/pyb.Servo.html">Servo类 –三线hobby舵机驱动</a></p>
+<h2 id="常见场景"><a href="#常见场景" class="headerlink" title="常见场景"></a>常见场景</h2><p>寻找色块：<a href="https://book.openmv.cc/quick-starter.html#%E8%BF%BD%E8%B8%AA%E5%B0%8F%E7%90%83">追踪小球</a> （官网写着追踪小球，但其实是寻找色块）</p>
+<p>模版匹配（单）：<a href="https://book.openmv.cc/image/template-match.html">模版匹配NCC</a></p>
+<p>模版匹配（多）：<a href="https://book.openmv.cc/image/mulity-template-match.html">多模版匹配NCC</a></p>
+<p>串口通信（只发送一个字节）：<a href="https://book.openmv.cc/MCU/serial1.html#%E4%BB%8B%E7%BB%8D">介绍</a></p>
+<p>巡线小车：<a href="https://book.openmv.cc/project/follow-lines.html#%E8%B0%83%E6%95%B4%E5%8F%82%E6%95%B0%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%B7%9F%E9%9A%8F">巡线小车</a></p>
+<h2 id="代码注解"><a href="#代码注解" class="headerlink" title="代码注解"></a>代码注解</h2><p><strong>1、JSON</strong></p>
+<p>以下的代码即可完成JSON的转换。</p>
+<p>文档：<a href="https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html">https://docs.singtown.com/micropython/zh/latest/openmvcam/library/ujson.html</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">json.dumps(your_data)</span><br></pre></td></tr></table></figure>
+
+<p>有时可以使用python的字符串格式化的功能代替JSON，例如下面的代码是一样的。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">output_str=<span class="string">&quot;[%d,%d]&quot;</span> % (max_blob.cx(),max_blob.cy()) <span class="comment">#方式1</span></span><br><span class="line">output_str=json.dumps([max_blob.cx(),max_blob.cy()]) <span class="comment">#方式2</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2、其他</strong></p>
+<p>自己学的时候写了个定时器定时中断控制灯的代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> pyb</span><br><span class="line"><span class="keyword">from</span> pyb <span class="keyword">import</span> LED, Timer</span><br><span class="line"></span><br><span class="line">rled = LED(<span class="number">1</span>) <span class="comment"># 红led</span></span><br><span class="line">bled = LED(<span class="number">2</span>) <span class="comment"># 绿led</span></span><br><span class="line">gled = LED(<span class="number">3</span>) <span class="comment"># 蓝led</span></span><br><span class="line"></span><br><span class="line">tim = Timer(<span class="number">4</span>, freq=<span class="number">1</span>) <span class="comment"># 1Hz触发TIM4定时器</span></span><br><span class="line">tim.callback(<span class="keyword">lambda</span> t: rled.toggle())</span><br><span class="line"></span><br><span class="line">clock = time.clock()</span><br><span class="line"><span class="keyword">while</span>(<span class="literal">True</span>):</span><br><span class="line">    clock.tick()</span><br><span class="line">    </span><br><span class="line">    bled.on()</span><br><span class="line">    gled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    gled.on()</span><br><span class="line">    bled.off()</span><br><span class="line">    pyb.delay(<span class="number">500</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(clock.fps())</span><br></pre></td></tr></table></figure>
+
+<h1 id="k210"><a href="#k210" class="headerlink" title="k210"></a>k210</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><strong>1、概述</strong></p>
+<p>嘉楠科技：<a href="https://www.canaan-creative.com/">嘉楠科技</a></p>
+<p>勘智K210：<a href="https://www.canaan-creative.com/product/kendryteai">勘智K210</a></p>
+<p>K210视觉识别模块：<a href="https://www.yahboom.com/tbdetails?id=546">K210视觉识别模块</a></p>
+<p>购买：<a href="https://detail.tmall.com/item.htm?id=711688603937">亚博智能 K210视觉识别模块CanMV传感器AI机器摄像头Python开发板</a></p>
+<p><strong>2、学习资料</strong></p>
+<p>K210视觉识别模块教程：<a href="https://www.yahboom.com/study/K210-AI-Camera">K210视觉识别模块学习专区 - 亚博智能</a></p>
+<p>CanMV文档：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
+<p>CanMV API 手册：<a href="https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv">https://developer.canaan-creative.com/index.html?channel=developer#/document/canmv</a></p>
+<h2 id="数字识别"><a href="#数字识别" class="headerlink" title="数字识别"></a>数字识别</h2><p><strong>1、介绍</strong></p>
+<p>自主学习分类：<a href="https://www.yahboom.com/build.html?id=6145&cid=580">自主学习分类</a></p>
+<p><strong>2、模型训练</strong></p>
+<p>哔哩哔哩教程：<a href="https://www.bilibili.com/video/BV1Ga4y1H79J/?spm_id_from=333.337.search-card.all.click&vd_source=c6a75c082f96f79b814a4b6c18035936">基于MaixHub与K210模型训练和实时目标检测（入门版）</a></p>
+<p>MaixHub：<a href="https://maixhub.com/">https://maixhub.com/</a></p>
+<p>labelimg 下载：<a href="https://blog.csdn.net/dulingwen/article/details/88840703">Windows 10下安装labelImg标注工具！</a></p>
+<div class="note info no-icon flat"><p>模型训练：<a href="https://qichenxi.blog.csdn.net/article/details/121044449">Mx-yolov3+Maixpy+ K210进行本地模型训练和目标检测</a></p>
+<p>大佬博客：<a href="https://qichenxi.blog.csdn.net/?type=blog">我与nano</a></p>
+<p>Sipeed 资料站：<a href="https://wiki.sipeed.com/">Sipeed 资料站 - Sipeed Wiki</a></p>
+</div>]]></content>
+      <categories>
+        <category>大学生电子设计竞赛</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
       </tags>
   </entry>
 </search>
