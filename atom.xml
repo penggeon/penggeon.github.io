@@ -6,7 +6,7 @@
   <link href="https://penggeon.top/atom.xml" rel="self"/>
   
   <link href="https://penggeon.top/"/>
-  <updated>2024-03-27T03:12:03.488Z</updated>
+  <updated>2024-05-17T16:12:33.240Z</updated>
   <id>https://penggeon.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://penggeon.top/posts/af59e567.html"/>
     <id>https://penggeon.top/posts/af59e567.html</id>
     <published>2024-03-26T10:55:00.000Z</published>
-    <updated>2024-03-27T03:12:03.488Z</updated>
+    <updated>2024-05-17T16:12:33.240Z</updated>
     
     
     <summary type="html">DHT11数字温湿度传感器是一款含有已校准数字信号输出的温湿度复合传感器，包括一个电阻式感湿元件和一个NTC测温元件，可以用来测量温度和湿度。</summary>
@@ -46,7 +46,7 @@
     <link href="https://penggeon.top/posts/27859.html"/>
     <id>https://penggeon.top/posts/27859.html</id>
     <published>2024-02-18T05:28:00.000Z</published>
-    <updated>2024-03-27T03:11:39.732Z</updated>
+    <updated>2024-05-17T16:05:49.864Z</updated>
     
     
     <summary type="html">Verilog 常用模块总结。</summary>
@@ -63,7 +63,7 @@
     <link href="https://penggeon.top/posts/34498.html"/>
     <id>https://penggeon.top/posts/34498.html</id>
     <published>2024-02-18T05:27:00.000Z</published>
-    <updated>2024-03-27T03:11:19.647Z</updated>
+    <updated>2024-05-17T16:05:54.411Z</updated>
     
     
     <summary type="html">verilog编写猫狗过河实验</summary>
@@ -80,7 +80,7 @@
     <link href="https://penggeon.top/posts/6413.html"/>
     <id>https://penggeon.top/posts/6413.html</id>
     <published>2024-02-18T05:26:00.000Z</published>
-    <updated>2024-03-27T03:11:07.624Z</updated>
+    <updated>2024-05-17T16:05:58.973Z</updated>
     
     
     <summary type="html">openmv 和 k210 是视觉算法常见的两个解决方案。</summary>
@@ -101,7 +101,7 @@
     <link href="https://penggeon.top/posts/48839.html"/>
     <id>https://penggeon.top/posts/48839.html</id>
     <published>2024-02-18T05:25:00.000Z</published>
-    <updated>2024-03-27T03:10:47.454Z</updated>
+    <updated>2024-05-17T16:06:03.648Z</updated>
     
     
     <summary type="html">stm32 代码里常常使用预编译命令来帮助我们更好的开发。而且我一时直接也分不太清 if 和 if defined 的区别，看了好久才搞懂。</summary>
@@ -124,7 +124,7 @@
     <link href="https://penggeon.top/posts/3906.html"/>
     <id>https://penggeon.top/posts/3906.html</id>
     <published>2024-02-18T05:24:00.000Z</published>
-    <updated>2024-03-27T03:10:35.965Z</updated>
+    <updated>2024-05-17T16:06:08.323Z</updated>
     
     
     <summary type="html">记录有关STM32 HAL库学习的资源，方便查看。</summary>
@@ -147,7 +147,7 @@
     <link href="https://penggeon.top/posts/20930.html"/>
     <id>https://penggeon.top/posts/20930.html</id>
     <published>2024-02-18T05:23:00.000Z</published>
-    <updated>2024-03-27T03:10:19.777Z</updated>
+    <updated>2024-05-17T16:06:12.901Z</updated>
     
     
     <summary type="html">STM32 标准库学习，包括固件库函数的介绍和基本使用。</summary>
@@ -170,7 +170,7 @@
     <link href="https://penggeon.top/posts/7474.html"/>
     <id>https://penggeon.top/posts/7474.html</id>
     <published>2024-02-18T05:18:00.000Z</published>
-    <updated>2024-03-27T03:10:03.911Z</updated>
+    <updated>2024-05-17T16:06:17.206Z</updated>
     
     
     <summary type="html">使用 STM32F103C8T6 芯片，若芯片不同，可去 ST 官网搜索自己的芯片手册</summary>
