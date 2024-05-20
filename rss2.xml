@@ -15,8 +15,37 @@
     <atom:link href="https://penggeon.top/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>一个热爱编程的通信领域博客</description>
-    <pubDate>Fri, 17 May 2024 16:12:33 GMT</pubDate>
+    <pubDate>Mon, 20 May 2024 17:03:10 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>STM32实战——ESP8266 WIFI模块</title>
+      <link>https://penggeon.top/posts/5045eba0.html</link>
+      <guid>https://penggeon.top/posts/5045eba0.html</guid>
+      <pubDate>Mon, 20 May 2024 16:53:00 GMT</pubDate>
+      
+      <description>ESP8266 WIFI 模块是单片机中常用接入互相网的模块，价格低廉，使用简单</description>
+      
+      
+      
+      
+      <category domain="https://penggeon.top/categories/STM32/">STM32</category>
+      
+      
+      <category domain="https://penggeon.top/tags/%E5%8D%95%E7%89%87%E6%9C%BA/">单片机</category>
+      
+      <category domain="https://penggeon.top/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</category>
+      
+      <category domain="https://penggeon.top/tags/STM32/">STM32</category>
+      
+      <category domain="https://penggeon.top/tags/ESP8266/">ESP8266</category>
+      
+      <category domain="https://penggeon.top/tags/WIFI/">WIFI</category>
+      
+      
+      <comments>https://penggeon.top/posts/5045eba0.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>STM32实战——DHT11温湿度获取并展示</title>
