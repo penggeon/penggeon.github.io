@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>STM32中的预编译</title>
+    <url>/posts/48839.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h1><p><strong>1、不带参宏定义</strong></p>
+<p><code>#define</code>，宏定义命令，它也是C语言预处理命令的一种。</p>
+<p>所谓宏定义，就是用一个标识符来表示一个字符串，如果在后面的代码中出现了该标识符，那么就全部替换成指定的字符串。</p>
+<p>例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100</span></span><br></pre></td></tr></table></figure>
+
+<p>在编译过程中遇到 N 时，会直接替换为 100。</p>
+<p><strong>2、带参公定义</strong></p>
+<p>宏定义可以携带参数。</p>
+<p>例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> M(y) y*y+3*y  <span class="comment">//宏定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 以下命令解释为 5*5+3*5</span></span><br><span class="line">    <span class="type">int</span> a = M(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3、防止头文件重复包含</strong></p>
+<p>如下所示</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __HEADER_One_H__ <span class="comment">// 意思是：宏开始行，如果还没有定义 __HEADER_One_H__ 则 进入，否则退出</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __HEADER_One_H__ <span class="comment">// 定义 __HEADER_One_H__</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// header1.h 头文件内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
+
+<p>模版：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __x_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __x_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
+
+<h1 id="if-与-if-defined"><a href="#if-与-if-defined" class="headerlink" title="#if 与 #if defined"></a>#if 与 #if defined</h1><p><strong>1、<code>#if</code></strong></p>
+<p><code>#if</code>的意思是如果宏条件符合，编译器就编译这段代码，否则，编译器就忽略这段代码而不编译，如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  A 0  <span class="comment">// 把A定义为0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (A &gt; 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &gt; 1&quot;</span>);  <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> (A == 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A == 1&quot;</span>); <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &lt; 1&quot;</span>);   <span class="comment">// 编译器编译了这段代码，且生成了汇编代码，执行该语句</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>模版：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2、<code>#if defined</code></strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> defined (x)</span></span><br><span class="line">    ...code...</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>这个<code>#if defined</code>它不管里面的 x 的逻辑是“真”还是“假”。它只管这个程序的前面的宏定义里面有没有定义 x 这个宏，如果定义了 x 这个宏，那么，编译器会编译中间的 <code>…code…</code>，否则会直接忽视中间的 <code>…code…</code> 代码。</p>
+]]></content>
+      <categories>
+        <category>大学生电子设计竞赛</category>
+      </categories>
+      <tags>
+        <tag>单片机</tag>
+        <tag>嵌入式</tag>
+        <tag>STM32</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>STM32 CubeMX及HAL库学习</title>
     <url>/posts/3906.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><p>在拥有固件库开发的基础上，观看 Z小旋的博客-CSDN博客，能够快速上手 HAL 库。</p>
@@ -36,51 +81,6 @@
 <p>基于HAL库的stm32的OLED显示屏显示：<a href="https://blog.csdn.net/zhao710577624/article/details/129887136">基于HAL库的stm32的OLED显示屏显示（模拟I2C，四脚，0.96寸）</a></p>
 <h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>大佬的笔记整理：<a href="https://blog.csdn.net/wenhaiii/category_11376057.html">【单片机学习笔记】上传一整年的自学电子笔记，互相交流，共同进步</a></p>
 <p>电赛国一大佬的方案：<a href="https://blog.csdn.net/qq_45204725/article/details/121375031">2021年全国大学生电子设计大赛F题——智能送药小车，全方位解决方案+程序代码（详细注释）山东赛区国奖</a></p>
-]]></content>
-      <categories>
-        <category>大学生电子设计竞赛</category>
-      </categories>
-      <tags>
-        <tag>单片机</tag>
-        <tag>嵌入式</tag>
-        <tag>STM32</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>STM32中的预编译</title>
-    <url>/posts/48839.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h1><p><strong>1、不带参宏定义</strong></p>
-<p><code>#define</code>，宏定义命令，它也是C语言预处理命令的一种。</p>
-<p>所谓宏定义，就是用一个标识符来表示一个字符串，如果在后面的代码中出现了该标识符，那么就全部替换成指定的字符串。</p>
-<p>例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> N 100</span></span><br></pre></td></tr></table></figure>
-
-<p>在编译过程中遇到 N 时，会直接替换为 100。</p>
-<p><strong>2、带参公定义</strong></p>
-<p>宏定义可以携带参数。</p>
-<p>例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> M(y) y*y+3*y  <span class="comment">//宏定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 以下命令解释为 5*5+3*5</span></span><br><span class="line">    <span class="type">int</span> a = M(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>3、防止头文件重复包含</strong></p>
-<p>如下所示</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __HEADER_One_H__ <span class="comment">// 意思是：宏开始行，如果还没有定义 __HEADER_One_H__ 则 进入，否则退出</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __HEADER_One_H__ <span class="comment">// 定义 __HEADER_One_H__</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// header1.h 头文件内容</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
-
-<p>模版：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __x_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __x_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// 宏结束行</span></span></span><br></pre></td></tr></table></figure>
-
-<h1 id="if-与-if-defined"><a href="#if-与-if-defined" class="headerlink" title="#if 与 #if defined"></a>#if 与 #if defined</h1><p><strong>1、<code>#if</code></strong></p>
-<p><code>#if</code>的意思是如果宏条件符合，编译器就编译这段代码，否则，编译器就忽略这段代码而不编译，如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span>  A 0  <span class="comment">// 把A定义为0</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (A &gt; 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &gt; 1&quot;</span>);  <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> (A == 1)</span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A == 1&quot;</span>); <span class="comment">// 编译器没有编译该语句,该语句不生成汇编代码</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;A &lt; 1&quot;</span>);   <span class="comment">// 编译器编译了这段代码，且生成了汇编代码，执行该语句</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>模版：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> x</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p><strong>2、<code>#if defined</code></strong></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> defined (x)</span></span><br><span class="line">    ...code...</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-
-<p>这个<code>#if defined</code>它不管里面的 x 的逻辑是“真”还是“假”。它只管这个程序的前面的宏定义里面有没有定义 x 这个宏，如果定义了 x 这个宏，那么，编译器会编译中间的 <code>…code…</code>，否则会直接忽视中间的 <code>…code…</code> 代码。</p>
 ]]></content>
       <categories>
         <category>大学生电子设计竞赛</category>
