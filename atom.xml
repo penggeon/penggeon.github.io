@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>penggeon的鸽巢</title>
+  <title>鹏展的博客</title>
   <icon>https://penggeon.top/icon.png</icon>
   
   <link href="https://penggeon.top/atom.xml" rel="self"/>
   
   <link href="https://penggeon.top/"/>
-  <updated>2024-05-20T17:03:10.888Z</updated>
+  <updated>2024-06-24T05:55:39.300Z</updated>
   <id>https://penggeon.top/</id>
   
   <author>
-    <name>penggeon</name>
+    <name>鹏展</name>
     
   </author>
   
@@ -21,7 +21,7 @@
     <link href="https://penggeon.top/posts/5045eba0.html"/>
     <id>https://penggeon.top/posts/5045eba0.html</id>
     <published>2024-05-20T16:53:00.000Z</published>
-    <updated>2024-05-20T17:03:10.888Z</updated>
+    <updated>2024-06-24T05:55:39.300Z</updated>
     
     
     <summary type="html">ESP8266 WIFI 模块是单片机中常用接入互相网的模块，价格低廉，使用简单</summary>
@@ -90,7 +90,7 @@
     <link href="https://penggeon.top/posts/34498.html"/>
     <id>https://penggeon.top/posts/34498.html</id>
     <published>2024-02-18T05:27:00.000Z</published>
-    <updated>2024-05-17T16:05:54.411Z</updated>
+    <updated>2024-06-24T05:50:28.304Z</updated>
     
     
     <summary type="html">verilog编写猫狗过河实验</summary>
@@ -174,7 +174,7 @@
     <link href="https://penggeon.top/posts/20930.html"/>
     <id>https://penggeon.top/posts/20930.html</id>
     <published>2024-02-18T05:23:00.000Z</published>
-    <updated>2024-05-17T16:06:12.901Z</updated>
+    <updated>2024-06-24T05:47:12.373Z</updated>
     
     
     <summary type="html">STM32 标准库学习，包括固件库函数的介绍和基本使用。</summary>
