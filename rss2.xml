@@ -15,8 +15,27 @@
     <atom:link href="https://penggeon.top/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>一个热爱编程的通信领域博客</description>
-    <pubDate>Mon, 24 Jun 2024 05:55:39 GMT</pubDate>
+    <pubDate>Thu, 24 Oct 2024 16:20:45 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>个人简介</title>
+      <link>https://penggeon.top/posts/35221811.html</link>
+      <guid>https://penggeon.top/posts/35221811.html</guid>
+      <pubDate>Thu, 24 Oct 2024 15:24:00 GMT</pubDate>
+      
+      <description>在每次制作简历时，为了迎合岗位的需求（广义的“岗位”），每次或多或少都要删掉一些东西，所以想要找一个地方保留一下所有的数据，同时也方便给其他人看，就放在博客里写了。同时也锻炼一下我的表达能力，有些竞赛确实做了很多东西，但是最终却展现不出来。</description>
+      
+      
+      
+      
+      <category domain="https://penggeon.top/categories/%E5%85%B6%E4%BB%96/">其他</category>
+      
+      
+      
+      <comments>https://penggeon.top/posts/35221811.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>STM32实战——ESP8266 WIFI模块</title>
