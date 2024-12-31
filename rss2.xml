@@ -15,8 +15,27 @@
     <atom:link href="https://penggeon.top/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>一个热爱编程的通信领域博客</description>
-    <pubDate>Mon, 24 Jun 2024 05:55:39 GMT</pubDate>
+    <pubDate>Tue, 31 Dec 2024 17:16:21 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>2024年度总结</title>
+      <link>https://penggeon.top/posts/c2cf88b8.html</link>
+      <guid>https://penggeon.top/posts/c2cf88b8.html</guid>
+      <pubDate>Tue, 31 Dec 2024 17:07:00 GMT</pubDate>
+      
+      <description>转眼间2024过完了，今年走走停停，有积累有收获，也有过迷茫和疑惑，偶尔慢下来想一想，或许不一样的想法才能留着。  这份年度报告写的匆匆，也许会有许多没有记录到的地方，2025的日子里再缝缝补补吧。</description>
+      
+      
+      
+      
+      <category domain="https://penggeon.top/categories/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/">年度总结</category>
+      
+      
+      
+      <comments>https://penggeon.top/posts/c2cf88b8.html#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>STM32实战——ESP8266 WIFI模块</title>
